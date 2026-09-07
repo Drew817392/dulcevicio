@@ -899,5 +899,510 @@
   box-shadow: 0 4px 12px rgba(229, 62, 62, 0.4);
 }
 
+/* --- Navegación y Auth Navbar --- */
+.nav-links-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-link-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-h);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--accent-pink);
+  transform: translateY(-1px);
+}
+
+.nav-link-btn.active {
+  background: var(--accent-pink);
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 192, 203, 0.4);
+}
+
+.nav-user-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-trigger-btn {
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--accent-pink);
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-h);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.login-trigger-btn:hover {
+  background: var(--accent-pink);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 192, 203, 0.4);
+  padding: 6px 14px;
+  border-radius: 50px;
+}
+
+.user-avatar-icon {
+  font-size: 20px;
+}
+
+.user-text-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.user-role-tag {
+  font-size: 11px;
+  color: #7D6608;
+  font-weight: 600;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: #C0392B;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #FDEDEC;
+}
+
+/* --- Toast flotante --- */
+.cart-toast-notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #3D2D20;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- Carrito Page Layout --- */
+.cart-page-container {
+  padding: 20px 0 60px 0;
+}
+
+.cart-page-header {
+  margin-bottom: 30px;
+}
+
+.cart-page-header h2 {
+  font-size: 32px;
+  color: var(--text-h);
+}
+
+.cart-page-header p {
+  color: var(--text);
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.cart-error-banner {
+  background: #FFF5F5;
+  border: 1px solid #FED7D7;
+  border-left: 5px solid #E53E3E;
+  color: #C53030;
+  padding: 14px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  animation: fadeIn 0.3s ease;
+}
+
+.error-content {
+  flex: 1;
+  font-size: 15px;
+}
+
+.error-close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #C53030;
+  opacity: 0.7;
+}
+
+.cart-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 30px;
+}
+
+@media (max-width: 850px) {
+  .cart-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cart-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cart-page-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(90, 78, 64, 0.04);
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item-title {
+  font-family: var(--heading);
+  font-size: 18px;
+  color: var(--text-h);
+  margin-bottom: 4px;
+}
+
+.cart-item-unit-price {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.cart-item-total-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.item-subtotal-price {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text-h);
+}
+
+.cart-summary-card {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 192, 203, 0.4);
+  padding: 24px;
+  border-radius: 20px;
+  height: fit-content;
+  box-shadow: var(--shadow);
+}
+
+.cart-summary-card h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.summary-row.total-highlight {
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-h);
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 2px solid rgba(255, 192, 203, 0.5);
+}
+
+.summary-disclaimer {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.8;
+  margin: 16px 0 20px 0;
+  line-height: 1.4;
+}
+
+.vaciar-cart-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 13px;
+  margin-top: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.volver-catalogo-btn {
+  background: var(--accent-pink);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.volver-catalogo-btn:hover {
+  background: var(--accent-pink-hover);
+  transform: translateY(-2px);
+}
+
+/* --- Mis Pedidos Page Layout --- */
+.pedidos-container {
+  padding: 20px 0 60px 0;
+}
+
+.pedidos-header {
+  margin-bottom: 30px;
+}
+
+.pedidos-title {
+  font-size: 32px;
+  color: var(--text-h);
+}
+
+.pedidos-subtitle {
+  color: var(--text);
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.pedidos-loading {
+  padding: 80px 20px;
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-h);
+}
+
+.pedidos-error {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.pedidos-empty {
+  text-align: center;
+  padding: 70px 20px;
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border);
+  border-radius: 24px;
+}
+
+.empty-pedidos-icon {
+  font-size: 54px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.pedidos-empty h3 {
+  font-size: 24px;
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.pedidos-empty p {
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+.pedidos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pedido-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(90, 78, 64, 0.05);
+}
+
+.pedido-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pedido-id-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pedido-label {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pedido-number {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-h);
+}
+
+.pedido-fecha {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.pedido-estado-badge {
+  background: #D4EDDA;
+  color: #155724;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pedido-items-table {
+  margin: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pedido-table-head {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px dashed var(--border);
+  opacity: 0.8;
+}
+
+.pedido-item-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  align-items: center;
+  font-size: 15px;
+}
+
+.item-prod-nombre {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.pedido-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.total-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.total-amount {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-h);
+}
+
+/* --- Auth Modal & Checkbox Consentimiento Ley 25.326 --- */
+.auth-error-banner {
+  background: #FFF5F5;
+  border: 1px solid #FED7D7;
+  color: #C53030;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.consent-checkbox-group {
+  margin: 14px 0 6px 0;
+  padding: 10px 14px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 192, 203, 0.5);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+
 
 

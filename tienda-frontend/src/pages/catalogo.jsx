@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { getProductos } from '../services/api';
+import { useCarrito } from '../context/CarritoContext';
 import ProductCard from '../components/ProductCard';
 
 export default function Catalogo({ onAddToCart }) {
+  const { agregar } = useCarrito();
   const [productos, setProductos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [busqueda, setBusqueda] = useState('');
+  const [mensajeToast, setMensajeToast] = useState(null);
   const limit = 2; // Mostrar 2 productos por página para facilitar la prueba de paginación
 
   const cargarProductos = () => {
@@ -29,8 +32,27 @@ export default function Catalogo({ onAddToCart }) {
     cargarProductos();
   }, [page, busqueda]);
 
+  const handleAddToCart = (producto) => {
+    if (onAddToCart) {
+      onAddToCart(producto);
+    } else {
+      agregar(producto, 1);
+    }
+    setMensajeToast(`¡Agregaste "${producto.nombre}" al carrito! 🍰`);
+    setTimeout(() => {
+      setMensajeToast(null);
+    }, 2500);
+  };
+
   return (
     <div className="catalog-container">
+      {/* Notificación flotante de producto agregado */}
+      {mensajeToast && (
+        <div className="cart-toast-notification">
+          {mensajeToast}
+        </div>
+      )}
+
       {/* Buscador de productos */}
       <div className="search-bar-container">
         <input
@@ -73,7 +95,7 @@ export default function Catalogo({ onAddToCart }) {
               <ProductCard 
                 key={producto.id} 
                 producto={producto} 
-                onAddToCart={onAddToCart} 
+                onAddToCart={handleAddToCart} 
               />
             ))}
           </div>
@@ -101,4 +123,3 @@ export default function Catalogo({ onAddToCart }) {
     </div>
   );
 }
-
