@@ -1,6 +1,8 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-// Helper para obtener las cabeceras de autorización
+/**
+ * Helper para obtener las cabeceras con token JWT si existe en localStorage
+ */
 export function authHeaders(extraHeaders = {}) {
   const token = localStorage.getItem('access_token');
   return {
@@ -10,10 +12,15 @@ export function authHeaders(extraHeaders = {}) {
   };
 }
 
-// Manejador centralizado de respuestas y errores HTTP
+/**
+ * Manejador centralizado de respuestas HTTP:
+ * - 401: Sesión expirada o no autorizada ("Tu sesión venció").
+ * - 409: Conflicto de stock dinámico enviado desde el backend.
+ * - Resto de errores: Mensaje genérico descriptivo.
+ */
 export async function manejarRespuesta(res) {
   if (res.status === 401) {
-    throw new Error('Tu sesión venció. Por favor, iniciá sesión nuevamente.');
+    throw new Error('Tu sesión venció');
   }
 
   if (res.status === 409) {
@@ -23,16 +30,17 @@ export async function manejarRespuesta(res) {
 
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.detail || `Error ${res.status} al procesar la solicitud`);
+    throw new Error(errorData.detail || 'Ocurrió un error inesperado al procesar la solicitud.');
   }
 
-  // Si no hay contenido (por ej. 204 No Content)
   if (res.status === 204) return null;
 
   return res.json();
 }
 
-// Obtener catálogo de productos
+/**
+ * Obtener catálogo paginado y filtrado de productos
+ */
 export async function getProductos({ page = 0, limit = 12, nombre = "" } = {}) {
   const params = new URLSearchParams({ page, limit });
   if (nombre) params.set("nombre", nombre);
@@ -41,12 +49,15 @@ export async function getProductos({ page = 0, limit = 12, nombre = "" } = {}) {
   return manejarRespuesta(res);
 }
 
-// Confirmar y crear pedido en el backend
+/**
+ * REGLA DE ORO BACKEND: Al backend NUNCA se le envían nombres, precios ni totales calculados.
+ * Solo acepta el array de ítems con producto_id y cantidad.
+ * Formato estricto: { "items": [ { "producto_id": X, "cantidad": Y } ] }
+ */
 export async function crearPedido(items) {
-  // La regla que no se negocia: Al backend le mandás solo producto_id y cantidad
   const payload = {
     items: items.map((item) => ({
-      producto_id: item.id,
+      producto_id: item.id || item.producto_id,
       cantidad: item.cantidad,
     })),
   };
@@ -60,7 +71,9 @@ export async function crearPedido(items) {
   return manejarRespuesta(res);
 }
 
-// Obtener historial de compras del usuario autenticado
+/**
+ * Obtener historial de pedidos del usuario autenticado
+ */
 export async function getMisPedidos() {
   const res = await fetch(`${BASE_URL}/pedidos/mis-pedidos`, {
     method: 'GET',

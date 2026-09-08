@@ -10,6 +10,12 @@ export default function CarritoPage({ onIrAHistorial, onIrACatalogo, onAbrirAuth
   const [errorMensaje, setErrorMensaje] = useState(null);
   const [compraExitosa, setCompraExitosa] = useState(false);
 
+  /**
+   * Función confirmar: Procesa el checkout cumpliendo con:
+   * 1. Bloqueo inmediato ante doble clic (if (enviando) return).
+   * 2. Manejo de estado 'enviando' en bloque try/catch/finally.
+   * 3. Vaciado del carrito y redirección a /mis-pedidos tras confirmación exitosa.
+   */
   const confirmar = async () => {
     // Protección contra doble clic o peticiones simultáneas
     if (enviando) return;
@@ -29,13 +35,13 @@ export default function CarritoPage({ onIrAHistorial, onIrACatalogo, onAbrirAuth
     setEnviando(true);
 
     try {
-      // La regla que no se negocia: se envían solo producto_id y cantidad
+      // Regla de oro backend: Solo enviamos producto_id y cantidad
       await crearPedido(items);
       setCompraExitosa(true);
-      vaciar(); // Vaciamos el carrito tras confirmar la compra
+      vaciar(); // Vaciado de carrito en frontend
       setTimeout(() => {
         if (onIrAHistorial) onIrAHistorial();
-      }, 1200);
+      }, 1000);
     } catch (err) {
       setErrorMensaje(err.message || 'Ocurrió un problema al confirmar la compra.');
     } finally {
@@ -50,7 +56,7 @@ export default function CarritoPage({ onIrAHistorial, onIrACatalogo, onAbrirAuth
           <p className="success-icon">🎉</p>
           <h3 className="success-title">¡Compra Confirmada con Éxito!</h3>
           <p className="success-text">
-            Tu pedido ha sido registrado y el stock fue actualizado. Te estamos redirigiendo a tu historial de compras...
+            Tu pedido ha sido registrado en el servidor. Te estamos redirigiendo a tu historial de compras...
           </p>
           <button className="success-btn" onClick={onIrAHistorial}>
             Ver Mis Pedidos 🛍️
@@ -134,7 +140,7 @@ export default function CarritoPage({ onIrAHistorial, onIrACatalogo, onAbrirAuth
               <span>${total.toLocaleString('es-AR')}</span>
             </div>
             <p className="summary-disclaimer">
-              * El total definitivo y stock son validados en el servidor.
+              * El total definitivo y el stock se validan de forma segura en el servidor.
             </p>
 
             <button
