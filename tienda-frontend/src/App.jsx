@@ -5,6 +5,7 @@ import { CarritoProvider, useCarrito } from './context/CarritoContext';
 import Catalogo from './pages/catalogo';
 import CarritoPage from './pages/CarritoPage';
 import MisPedidos from './pages/MisPedidos';
+import RutaProtegida from './components/RutaProtegida';
 import AuthModal from './components/AuthModal';
 
 function TiendaApp() {
@@ -111,7 +112,9 @@ function TiendaApp() {
           />
         )}
         {vistaActual === 'mis-pedidos' && (
-          <MisPedidos onIrACatalogo={() => setVistaActual('catalogo')} />
+          <RutaProtegida onAbrirAuth={() => setIsAuthOpen(true)}>
+            <MisPedidos onIrACatalogo={() => setVistaActual('catalogo')} />
+          </RutaProtegida>
         )}
       </main>
 
