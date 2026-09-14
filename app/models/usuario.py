@@ -11,4 +11,6 @@ class Usuario(Base):
     hashed_password = Column(String, nullable=False)
     rol = Column(String, nullable=False, default="customer")
     acepto_tratamiento = Column(Boolean, nullable=False)
+    activo = Column(Boolean, default=True, nullable=False)
     fecha_consentimiento = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    fecha_baja = Column(DateTime(timezone=True), nullable=True)

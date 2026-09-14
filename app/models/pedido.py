@@ -10,6 +10,8 @@ class Pedido(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
     total = Column(Float, nullable=False)
     estado = Column(String, nullable=False, default="Confirmado")
+    codigo_revocacion = Column(String, nullable=True)
+    fecha_revocacion = Column(DateTime(timezone=True), nullable=True)
     fecha_creacion = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     usuario = relationship("Usuario", backref="pedidos")

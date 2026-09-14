@@ -15,17 +15,21 @@ export function authHeaders(extraHeaders = {}) {
 /**
  * Manejador centralizado de respuestas HTTP:
  * - 401: Sesión expirada o no autorizada ("Tu sesión venció").
- * - 409: Conflicto de stock dinámico enviado desde el backend.
- * - Resto de errores: Mensaje genérico descriptivo.
+ * - 409: Conflicto devuelto por la API (ej: falta de stock o revocación fuera de plazo / duplicada).
+ * - Resto de errores: Mensaje descriptivo con detail o fallback genérico.
  */
 export async function manejarRespuesta(res) {
   if (res.status === 401) {
+    // Limpiar almacenamiento si la sesión venció
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
     throw new Error('Tu sesión venció');
   }
 
   if (res.status === 409) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.detail || 'Conflicto de stock en el servidor.');
+    throw new Error(errorData.detail || 'Conflicto al procesar la solicitud en el servidor.');
   }
 
   if (!res.ok) {
@@ -77,6 +81,77 @@ export async function crearPedido(items) {
 export async function getMisPedidos() {
   const res = await fetch(`${BASE_URL}/pedidos/mis-pedidos`, {
     method: 'GET',
+    headers: authHeaders(),
+  });
+
+  return manejarRespuesta(res);
+}
+
+/**
+ * Revocar compra (Botón de Arrepentimiento - Res. SCI 424/2020 y Disp. 954/2025)
+ */
+export async function revocarPedido(pedidoId) {
+  const res = await fetch(`${BASE_URL}/pedidos/${pedidoId}/revocacion`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+
+  return manejarRespuesta(res);
+}
+
+// --- Usuarios & Privacidad (Ley N° 25.326) ---
+
+/**
+ * Obtener datos personales del usuario autenticado (Derecho de Acceso)
+ */
+export async function getMisDatos() {
+  const res = await fetch(`${BASE_URL}/usuarios/me/datos`, {
+    method: 'GET',
+    headers: authHeaders(),
+  });
+
+  return manejarRespuesta(res);
+}
+
+/**
+ * Exportar y descargar datos personales y compras en formato JSON (Portabilidad)
+ */
+export async function exportarMisDatos() {
+  const res = await fetch(`${BASE_URL}/usuarios/me/exportar`, {
+    method: 'GET',
+    headers: authHeaders(),
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    throw new Error('Tu sesión venció');
+  }
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Error al exportar datos personales.');
+  }
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mis_datos_dulce_vicio_${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+  return true;
+}
+
+/**
+ * Solicitar baja lógica y anonimización de la cuenta (Derecho de Supresión)
+ */
+export async function darDeBajaCuenta() {
+  const res = await fetch(`${BASE_URL}/usuarios/me`, {
+    method: 'DELETE',
     headers: authHeaders(),
   });
 

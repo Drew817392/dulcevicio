@@ -27,6 +27,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     user = db.query(Usuario).filter(Usuario.email == email).first()
     if user is None:
         raise credentials_exception
+    if not user.activo:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="La cuenta de usuario se encuentra dada de baja o inactiva.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return user
 
 def require_admin(current_user: Usuario = Depends(get_current_user)) -> Usuario:

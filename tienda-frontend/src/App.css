@@ -1403,6 +1403,524 @@
   cursor: pointer;
 }
 
+/* --- ESTILOS: Botón de Arrepentimiento & Revocaciones (Clase 9) --- */
+.arrepentimiento-page-container {
+  max-width: 720px;
+  margin: 0 auto 60px auto;
+  padding: 10px;
+}
+
+.legal-badge-pill {
+  display: inline-block;
+  background: #FFF0F5;
+  border: 1px solid #FFB6C1;
+  color: #C71585;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 50px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.arrepentimiento-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.arrepentimiento-title {
+  font-family: var(--heading);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-h);
+  margin-bottom: 10px;
+}
+
+.arrepentimiento-subtitle {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.arrepentimiento-form-wrapper {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+
+.arrepentimiento-auth-hint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FFF9FA;
+  border: 1px dashed var(--accent-pink);
+  padding: 12px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.auth-hint-btn {
+  background: var(--text-h);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.auth-hint-btn:hover {
+  opacity: 0.9;
+}
+
+.arrepentimiento-form .input-group {
+  margin-bottom: 18px;
+}
+
+.arrepentimiento-form label {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.req-star {
+  color: #E53E3E;
+}
+
+.input-hint {
+  display: block;
+  font-size: 12px;
+  color: #718096;
+  margin-top: 4px;
+}
+
+.arrepentimiento-form input,
+.arrepentimiento-form textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  background: var(--bg);
+  box-sizing: border-box;
+}
+
+.legal-checkbox-notice {
+  background: #F7FAFC;
+  border-left: 3px solid #4299E1;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 20px 0;
+  color: #4A5568;
+}
+
+.btn-submit-arrepentimiento {
+  width: 100%;
+  background: linear-gradient(135deg, #D53F8C 0%, #B83280 100%);
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(213, 63, 140, 0.3);
+}
+
+.btn-submit-arrepentimiento:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-submit-arrepentimiento:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(213, 63, 140, 0.4);
+}
+
+/* Resultado de Arrepentimiento con role="status" */
+.arrepentimiento-resultado-card {
+  background: white;
+  border: 2px solid #38A169;
+  border-radius: 20px;
+  padding: 36px 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(56, 161, 105, 0.15);
+}
+
+.resultado-icon-circle {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.resultado-title {
+  font-family: var(--heading);
+  font-size: 26px;
+  font-weight: 800;
+  color: #22543D;
+  margin-bottom: 8px;
+}
+
+.resultado-desc {
+  font-size: 15px;
+  color: #4A5568;
+  margin-bottom: 24px;
+}
+
+.codigo-destacado-box {
+  background: #F0FFF4;
+  border: 2px dashed #38A169;
+  border-radius: 14px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.codigo-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: #276749;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+.codigo-valor {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 28px;
+  font-weight: 800;
+  color: #22543D;
+  letter-spacing: 2px;
+  margin: 6px 0;
+}
+
+.codigo-subtext {
+  font-size: 13px;
+  color: #4A5568;
+}
+
+.resultado-detalles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: #F7FAFC;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 26px;
+}
+
+.det-label {
+  display: block;
+  font-size: 12px;
+  color: #718096;
+}
+
+.det-val {
+  font-weight: 700;
+  font-size: 14px;
+  color: #2D3748;
+}
+
+.estado-ok {
+  color: #2F855A;
+}
+
+.resultado-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* --- ESTILOS: Mis Pedidos & Revocación en PedidoCard --- */
+.pedido-card-revocado {
+  border-color: #E2E8F0;
+  background: #FAF5FF;
+  opacity: 0.95;
+}
+
+.badge-confirmado {
+  background: #DEF7EC;
+  color: #03543F;
+}
+
+.badge-revocado {
+  background: #FDE8E8;
+  color: #9B1C1C;
+}
+
+.revocacion-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #DEF7EC;
+  border: 1px solid #31C48D;
+  color: #03543F;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin: 12px 16px;
+  text-align: left;
+}
+
+.tramite-code {
+  font-family: monospace;
+  font-weight: 800;
+  background: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #31C48D;
+}
+
+.revocado-info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F3F4F6;
+  padding: 8px 16px;
+  margin: 10px 16px 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #4B5563;
+}
+
+.legal-tag {
+  font-size: 11px;
+  font-weight: 700;
+  background: #E5E7EB;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.footer-left-legal {
+  flex: 1;
+}
+
+.btn-revocar-order {
+  background: #FFF5F5;
+  border: 1px solid #FEB2B2;
+  color: #C53030;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-revocar-order:hover:not(:disabled) {
+  background: #C53030;
+  color: white;
+}
+
+.revocado-tag-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #9B1C1C;
+}
+
+.plazo-vencido-tag {
+  font-size: 12px;
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+/* --- ESTILOS: Mis Datos Personales (Ley 25.326) --- */
+.mis-datos-container {
+  max-width: 800px;
+  margin: 0 auto 60px auto;
+  padding: 10px;
+}
+
+.mis-datos-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.mis-datos-title {
+  font-family: var(--heading);
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text-h);
+  margin-bottom: 8px;
+}
+
+.mis-datos-subtitle {
+  font-size: 15px;
+  color: var(--text);
+}
+
+.mis-datos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.datos-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+}
+
+.datos-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.datos-card-icon {
+  font-size: 24px;
+}
+
+.datos-card-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.datos-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dato-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.dato-label {
+  color: #718096;
+  font-weight: 500;
+}
+
+.dato-value {
+  color: #2D3748;
+  font-weight: 700;
+}
+
+.status-granted {
+  color: #2F855A;
+  background: #F0FFF4;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.datos-card-text {
+  font-size: 14px;
+  color: #4A5568;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.btn-exportar-datos {
+  background: #ED8936;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.btn-exportar-datos:hover:not(:disabled) {
+  background: #DD6B20;
+  transform: translateY(-2px);
+}
+
+.toast-success-mini {
+  background: #DEF7EC;
+  border: 1px solid #31C48D;
+  color: #03543F;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+/* Zona de peligro */
+.danger-zone-card {
+  border-color: #FEB2B2;
+  background: #FFF5F5;
+}
+
+.danger-zone-text {
+  font-size: 14px;
+  color: #742A2A;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.danger-confirm-box {
+  background: white;
+  border: 1px solid #FEB2B2;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.danger-confirm-label {
+  font-size: 13px;
+  color: #742A2A;
+}
+
+.input-danger-confirm {
+  padding: 10px 14px;
+  border: 2px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.input-danger-confirm:focus {
+  border-color: #E53E3E;
+  outline: none;
+}
+
+.btn-danger-baja {
+  background: #E53E3E;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger-baja:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-danger-baja:not(:disabled):hover {
+  background: #C53030;
+}
+
 
 
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, field_validator
-from typing import Optional
+from typing import Optional, List, Any, Dict
 from datetime import datetime
 
 class UsuarioBase(BaseModel):
@@ -20,10 +20,32 @@ class UsuarioCreate(UsuarioBase):
 class UsuarioOut(UsuarioBase):
     id: int
     rol: str
+    activo: bool = True
     fecha_consentimiento: Optional[datetime] = None
+    fecha_baja: Optional[datetime] = None
 
     class Config:
         from_attributes = True
+
+class UsuarioDatosOut(BaseModel):
+    id: int
+    nombre: str
+    email: str
+    rol: str
+    activo: bool
+    acepto_tratamiento: bool
+    fecha_consentimiento: Optional[datetime] = None
+    fecha_baja: Optional[datetime] = None
+    total_pedidos: int = 0
+
+    class Config:
+        from_attributes = True
+
+class BajaUsuarioOut(BaseModel):
+    mensaje: str
+    usuario_id: int
+    activo: bool
+    fecha_baja: datetime
 
 class Token(BaseModel):
     access_token: str

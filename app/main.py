@@ -4,7 +4,7 @@ from fastapi import FastAPI
 # pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, productos, pedidos
+from app.routers import auth, productos, pedidos, usuarios
 
 app = FastAPI(
     title="Dulce Vicio API",
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(productos.router)
 app.include_router(pedidos.router)
+app.include_router(usuarios.router)
 
 @app.get("/", tags=["General"])
 async def read_root():

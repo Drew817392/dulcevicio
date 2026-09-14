@@ -25,8 +25,20 @@ class PedidoOut(BaseModel):
     usuario_id: int
     total: float
     estado: str
+    codigo_revocacion: Optional[str] = None
+    fecha_revocacion: Optional[datetime] = None
     fecha_creacion: datetime
     items: List[ItemPedidoOut]
+
+    class Config:
+        from_attributes = True
+
+class RevocacionOut(BaseModel):
+    mensaje: str
+    codigo_revocacion: str
+    pedido_id: int
+    estado: str
+    fecha_revocacion: datetime
 
     class Config:
         from_attributes = True
