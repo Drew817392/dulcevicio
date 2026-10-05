@@ -7,13 +7,14 @@ import CarritoPage from './pages/CarritoPage';
 import MisPedidos from './pages/MisPedidos';
 import Arrepentimiento from './pages/Arrepentimiento';
 import MisDatos from './pages/MisDatos';
+import AdminPedidos from './pages/AdminPedidos';
 import AuthModal from './components/AuthModal';
 import RutaProtegida from './components/RutaProtegida';
 
 function TiendaApp() {
   const { user, isAuthenticated, logout } = useAuth();
   const { totalItems } = useCarrito();
-  const [vistaActual, setVistaActual] = useState('catalogo'); // 'catalogo' | 'carrito' | 'mis-pedidos' | 'arrepentimiento' | 'mis-datos'
+  const [vistaActual, setVistaActual] = useState('catalogo'); // 'catalogo' | 'carrito' | 'mis-pedidos' | 'arrepentimiento' | 'mis-datos' | 'admin-pedidos'
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const irA = (vista) => {
@@ -65,9 +66,21 @@ function TiendaApp() {
               >
                 🛡️ Mis Datos
               </button>
+
+              {/* Panel de Órdenes exclusivo para Administradores */}
+              {user?.rol === 'admin' && (
+                <button
+                  className={`nav-link-btn admin-nav-btn ${vistaActual === 'admin-pedidos' ? 'active' : ''}`}
+                  onClick={() => irA('admin-pedidos')}
+                  title="Ver y gestionar órdenes de todos los clientes"
+                >
+                  📦 Órdenes Clientes
+                </button>
+              )}
             </>
           )}
         </nav>
+
 
         {/* Acciones de Usuario / Autenticación */}
         <div className="nav-user-actions">
@@ -142,7 +155,17 @@ function TiendaApp() {
             <MisDatos onIrACatalogo={() => irA('catalogo')} />
           </RutaProtegida>
         )}
+
+        {vistaActual === 'admin-pedidos' && (
+          <RutaProtegida
+            onAbrirAuth={() => setIsAuthOpen(true)}
+            onIrACatalogo={() => irA('catalogo')}
+          >
+            <AdminPedidos onIrACatalogo={() => irA('catalogo')} />
+          </RutaProtegida>
+        )}
       </main>
+
 
       {/* Pie de Página Legal (Defensa del Consumidor & Arrepentimiento) */}
       <footer className="site-footer">

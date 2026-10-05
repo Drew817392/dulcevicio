@@ -54,6 +54,79 @@ export async function getProductos({ page = 0, limit = 12, nombre = "" } = {}) {
 }
 
 /**
+ * Crear un nuevo producto en el catálogo (Requiere rol Admin)
+ */
+export async function crearProducto(productoData) {
+  const res = await fetch(`${BASE_URL}/productos/`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(productoData),
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    throw new Error('Tu sesión venció');
+  }
+
+  if (res.status === 403) {
+    throw new Error('No tienes permisos de administrador para crear productos.');
+  }
+
+  return manejarRespuesta(res);
+}
+
+/**
+ * Actualizar un producto existente en el catálogo (Requiere rol Admin)
+ */
+export async function actualizarProducto(productoId, productoData) {
+  const res = await fetch(`${BASE_URL}/productos/${productoId}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(productoData),
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    throw new Error('Tu sesión venció');
+  }
+
+  if (res.status === 403) {
+    throw new Error('No tienes permisos de administrador para editar productos.');
+  }
+
+  return manejarRespuesta(res);
+}
+
+/**
+ * Obtener todas las órdenes de todos los clientes (Requiere rol Admin)
+ */
+export async function getTodosLosPedidosAdmin() {
+  const res = await fetch(`${BASE_URL}/pedidos/admin/todos`, {
+    method: 'GET',
+    headers: authHeaders(),
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    throw new Error('Tu sesión venció');
+  }
+
+  if (res.status === 403) {
+    throw new Error('No tienes permisos de administrador para consultar las órdenes de todos los clientes.');
+  }
+
+  return manejarRespuesta(res);
+}
+
+
+
+/**
  * REGLA DE ORO BACKEND: Al backend NUNCA se le envían nombres, precios ni totales calculados.
  * Solo acepta el array de ítems con producto_id y cantidad.
  * Formato estricto: { "items": [ { "producto_id": X, "cantidad": Y } ] }
@@ -199,4 +272,59 @@ export async function getMe() {
   });
 
   return manejarRespuesta(res);
+}
+
+/**
+ * Subir imagen de producto (Admin - Clase 10)
+ * - Usa FormData con el campo 'archivo'.
+ * - NO incluye 'Content-Type' manualmente (el navegador añade el boundary).
+ * - Incluye únicamente la cabecera Authorization si hay token.
+ * - Traduce respuestas 403, 404, 413, 415.
+ */
+export async function subirImagenProducto(productoId, file) {
+  const token = localStorage.getItem('access_token');
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const formData = new FormData();
+  formData.append('archivo', file);
+
+  const res = await fetch(`${BASE_URL}/productos/${productoId}/imagen`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+    throw new Error('Tu sesión venció');
+  }
+
+  if (res.status === 403) {
+    throw new Error('No tienes permisos de administrador para realizar esta acción.');
+  }
+
+  if (res.status === 404) {
+    throw new Error('El producto no fue encontrado en el catálogo.');
+  }
+
+  if (res.status === 413) {
+    throw new Error('El archivo supera el límite máximo permitido de 2 MB.');
+  }
+
+  if (res.status === 415) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.detail || 'Formato de imagen no soportado o archivo corrupto (solo JPG, PNG y WebP reales).');
+  }
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Ocurrió un error al subir la imagen del producto.');
+  }
+
+  return res.json();
 }

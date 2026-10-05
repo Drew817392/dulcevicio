@@ -42,3 +42,19 @@ class RevocacionOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+class PedidoAdminOut(BaseModel):
+    id: int
+    usuario_id: int
+    usuario_nombre: Optional[str] = None
+    usuario_email: Optional[str] = None
+    total: float
+    estado: str
+    codigo_revocacion: Optional[str] = None
+    fecha_revocacion: Optional[datetime] = None
+    fecha_creacion: datetime
+    items: List[ItemPedidoOut]
+
+    class Config:
+        from_attributes = True
+

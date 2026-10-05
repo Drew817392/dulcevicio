@@ -9,6 +9,7 @@ class ProductoBase(BaseModel):
     garantia_meses: int = 0
     stock: int = 0
     imagen: Optional[str] = None
+    imagen_url: Optional[str] = None
 
 class ProductoCreate(ProductoBase):
     pass
@@ -21,6 +22,8 @@ class ProductoUpdate(BaseModel):
     garantia_meses: Optional[int] = None
     stock: Optional[int] = None
     imagen: Optional[str] = None
+    imagen_url: Optional[str] = None
+
 
 class ProductoOut(ProductoBase):
     id: int

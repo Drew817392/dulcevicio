@@ -12,3 +12,5 @@ class Producto(Base):
     garantia_meses = Column(Integer, nullable=False, default=0)
     stock = Column(Integer, nullable=False, default=0)
     imagen = Column(String, nullable=True)
+    imagen_url = Column(String, nullable=True)
+

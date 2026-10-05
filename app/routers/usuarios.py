@@ -12,6 +12,7 @@ from app.schemas.usuario import UsuarioDatosOut, BajaUsuarioOut
 router = APIRouter(prefix="/usuarios", tags=["Usuarios y Privacidad"])
 
 @router.get("/me/datos", response_model=UsuarioDatosOut)
+@router.get("/me/datos/", response_model=UsuarioDatosOut, include_in_schema=False)
 def get_mis_datos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user)
@@ -35,6 +36,7 @@ def get_mis_datos(
     )
 
 @router.get("/me/exportar")
+@router.get("/me/exportar/", include_in_schema=False)
 def exportar_mis_datos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user)
@@ -102,6 +104,7 @@ def exportar_mis_datos(
     )
 
 @router.delete("/me", response_model=BajaUsuarioOut)
+@router.delete("/me/", response_model=BajaUsuarioOut, include_in_schema=False)
 def dar_de_baja_cuenta(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user)

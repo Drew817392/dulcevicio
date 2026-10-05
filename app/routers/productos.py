@@ -1,12 +1,16 @@
+import os
+import secrets
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.dependencies import require_admin
 from app.models.producto import Producto as ProductoModel
 from app.schemas.producto import ProductoCreate, ProductoUpdate, ProductoOut
+from app.utils.archivos import parece_imagen
 
 router = APIRouter(prefix="/productos", tags=["Productos"])
+
 
 @router.get("", response_model=List[ProductoOut])
 @router.get("/", response_model=List[ProductoOut], include_in_schema=False)
@@ -84,3 +88,75 @@ def delete_producto(
     db.delete(producto)
     db.commit()
     return None
+
+@router.post("/{producto_id}/imagen", response_model=ProductoOut, status_code=status.HTTP_200_OK)
+@router.post("/{producto_id}/imagen/", response_model=ProductoOut, status_code=status.HTTP_200_OK, include_in_schema=False)
+async def subir_imagen_producto(
+    producto_id: int,
+    archivo: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin_user = Depends(require_admin)
+):
+    """
+    Subida segura de imágenes para productos (Clase 10):
+    - Requiere rol admin.
+    - 3 validaciones estrictas (de la más barata a la más cara):
+      1) Extensión de archivo permitida (.jpg, .jpeg, .png, .webp).
+      2) Tamaño máximo menor o igual a 2 MB.
+      3) Validación de magic numbers (firma real de bytes).
+    - Nombre seguro: {producto_id}-{secrets.token_hex(8)}{ext}.
+    - Almacenamiento en uploads/productos/.
+    """
+    # 0. Validar existencia del producto en BD
+    producto = db.query(ProductoModel).filter(ProductoModel.id == producto_id).first()
+    if not producto:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Producto no encontrado."
+        )
+
+    # 1. Validación de extensión (más barata)
+    nombre_original = archivo.filename or ""
+    ext = os.path.splitext(nombre_original)[1].lower()
+    extensiones_permitidas = [".jpg", ".jpeg", ".png", ".webp"]
+    if ext not in extensiones_permitidas:
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail=f"Extensión de archivo '{ext}' no permitida. Solo se aceptan formatos .jpg, .jpeg, .png y .webp."
+        )
+
+    # 2. Validación de tamaño máximo (<= 2 MB)
+    contenido = await archivo.read()
+    max_bytes = 2 * 1024 * 1024  # 2 MB = 2097152 bytes
+    if len(contenido) > max_bytes:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE if hasattr(status, "HTTP_413_PAYLOAD_TOO_LARGE") else 413,
+            detail="El archivo supera el tamaño máximo permitido de 2 MB."
+        )
+
+
+    # 3. Validación de firma real de bytes (magic numbers)
+    if not parece_imagen(contenido):
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="El contenido del archivo no corresponde a una imagen válida (firma de bytes incompatible)."
+        )
+
+    # Generación de nombre seguro aleatorizado (nunca usar archivo.filename directo)
+    nombre_seguro = f"{producto_id}-{secrets.token_hex(8)}{ext}"
+    
+    # Guardar en uploads/productos/
+    upload_dir = os.path.join(os.getcwd(), "uploads", "productos")
+    os.makedirs(upload_dir, exist_ok=True)
+    ruta_destino = os.path.join(upload_dir, nombre_seguro)
+
+    with open(ruta_destino, "wb") as f:
+        f.write(contenido)
+
+    # Actualizar producto en la base de datos con ruta relativa accesible vía StaticFiles
+    producto.imagen_url = f"/static/productos/{nombre_seguro}"
+    db.commit()
+    db.refresh(producto)
+
+    return producto
+

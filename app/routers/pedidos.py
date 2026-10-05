@@ -4,13 +4,14 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user, require_admin
 from app.models.usuario import Usuario
 from app.models.producto import Producto
 from app.models.pedido import Pedido, ItemPedido
-from app.schemas.pedido import PedidoCreate, PedidoOut, ItemPedidoOut, RevocacionOut
+from app.schemas.pedido import PedidoCreate, PedidoOut, ItemPedidoOut, RevocacionOut, PedidoAdminOut
 
 router = APIRouter(prefix="/pedidos", tags=["Pedidos"])
+
 
 @router.post("", response_model=PedidoOut, status_code=status.HTTP_201_CREATED)
 @router.post("/", response_model=PedidoOut, status_code=status.HTTP_201_CREATED, include_in_schema=False)
@@ -121,6 +122,7 @@ def crear_pedido(
         )
 
 @router.post("/{id}/revocacion", response_model=RevocacionOut, status_code=status.HTTP_201_CREATED)
+@router.post("/{id}/revocacion/", response_model=RevocacionOut, status_code=status.HTTP_201_CREATED, include_in_schema=False)
 def revocar_pedido(
     id: int,
     db: Session = Depends(get_db),
@@ -236,3 +238,50 @@ def get_mis_pedidos(
         ))
 
     return resultados
+ 
+@router.get("/admin/todos", response_model=List[PedidoAdminOut])
+@router.get("/admin", response_model=List[PedidoAdminOut], include_in_schema=False)
+def get_todos_los_pedidos_admin(
+    db: Session = Depends(get_db),
+    admin_user: Usuario = Depends(require_admin)
+):
+    """
+    Panel de Control de Administrador:
+    - Retorna el listado completo de todas las órdenes de todos los clientes.
+    - Incluye información de usuario (nombre y correo), ítems comprados, precios y estado.
+    - Requiere autenticación con rol 'admin'.
+    """
+    pedidos = (
+        db.query(Pedido)
+        .order_by(Pedido.fecha_creacion.desc())
+        .all()
+    )
+
+    resultados = []
+    for p in pedidos:
+        items_out = []
+        for it in p.items:
+            prod_nombre = it.producto.nombre if it.producto else f"Producto #{it.producto_id}"
+            items_out.append(ItemPedidoOut(
+                id=it.id,
+                producto_id=it.producto_id,
+                nombre_producto=prod_nombre,
+                cantidad=it.cantidad,
+                precio_unitario=it.precio_unitario,
+                subtotal=it.subtotal
+            ))
+        resultados.append(PedidoAdminOut(
+            id=p.id,
+            usuario_id=p.usuario_id,
+            usuario_nombre=p.usuario.nombre if p.usuario else None,
+            usuario_email=p.usuario.email if p.usuario else None,
+            total=p.total,
+            estado=p.estado,
+            codigo_revocacion=p.codigo_revocacion,
+            fecha_revocacion=p.fecha_revocacion,
+            fecha_creacion=p.fecha_creacion,
+            items=items_out
+        ))
+
+    return resultados
+

@@ -42,12 +42,13 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     user = db.query(Usuario).filter(Usuario.email == form_data.username).first()
     
     # Validación segura: mensaje genérico para no revelar si falló el email o la contraseña
-    if not user or not verificar_password(form_data.password, user.hashed_password):
+    if not user or not user.activo or not verificar_password(form_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales incorrectas",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
 
     # Generar access y refresh tokens
     access_token = crear_token(
@@ -92,8 +93,9 @@ def refresh_token(token_data: TokenRefresh, db: Session = Depends(get_db)):
         raise credentials_exception
 
     user = db.query(Usuario).filter(Usuario.email == email).first()
-    if not user:
+    if not user or not user.activo:
         raise credentials_exception
+
 
     # Generar nuevo access token
     new_access_token = crear_token(

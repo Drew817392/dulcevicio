@@ -1,25 +1,54 @@
-export default function ProductCard({ producto, onAddToCart }) {
+import { urlImagen } from '../utils/imagenes';
+import { useAuth } from '../context/AuthContext';
+
+export default function ProductCard({ producto, onAddToCart, onEditarImagen, onEditarProducto }) {
+  const { user } = useAuth();
+  const isAdmin = user?.rol === 'admin';
+
   const {
     nombre,
     precio_final,
     cuotas_cantidad,
     cuotas_valor,
     garantia_meses,
-    imagen
+    stock,
   } = producto;
 
-  const defaultImage = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop&q=60";
+  const handleEditClick = () => {
+    if (onEditarProducto) {
+      onEditarProducto(producto);
+    } else if (onEditarImagen) {
+      onEditarImagen(producto);
+    }
+  };
 
   return (
     <div className="product-card">
-      <span className="product-card-badge">Delicia del Día</span>
-      <div style={{ overflow: 'hidden', position: 'relative' }}>
+      <span className="product-card-badge">
+        {stock !== undefined && stock <= 0 ? '⚠️ Sin stock' : 'Delicia del Día'}
+      </span>
+      
+      {/* Contenedor de imagen con aspect-square u object-cover */}
+      <div className="product-card-image-wrapper aspect-square" style={{ overflow: 'hidden', position: 'relative' }}>
         <img 
-          src={imagen || defaultImage} 
+          src={urlImagen(producto)} 
           alt={nombre} 
-          className="product-card-image"
+          loading="lazy"
+          className="product-card-image object-cover"
         />
+        {isAdmin && (onEditarProducto || onEditarImagen) && (
+          <button
+            type="button"
+            className="admin-edit-image-btn"
+            onClick={handleEditClick}
+            title="Editar producto y foto (Admin)"
+          >
+            ✏️ Editar Producto
+          </button>
+        )}
       </div>
+
+
       <div className="product-card-content">
         <h3 className="product-card-title">{nombre}</h3>
         
@@ -52,4 +81,5 @@ export default function ProductCard({ producto, onAddToCart }) {
     </div>
   );
 }
+
 
