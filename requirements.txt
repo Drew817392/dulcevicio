@@ -8,3 +8,4 @@ email-validator
 python-multipart
 pydantic
 python-jose
+pydantic_settings
