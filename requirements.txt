@@ -10,3 +10,4 @@ pydantic
 python-jose
 pydantic_settings
 psycopg
+passlib
