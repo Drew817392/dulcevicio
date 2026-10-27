@@ -136,3 +136,7 @@ Thumbs.db
 # User Uploads
 uploads/
 
+# Backups y volcados SQL
+*.sql
+
+

@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -20,9 +21,20 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Montar archivos estáticos para servir imágenes
-app.mount("/static", StaticFiles(directory="uploads"), name="static")
-app.mount("/demo", StaticFiles(directory="app/static/demo"), name="demo")
+# Middleware de compresión GZip (para respuestas mayores a 1 KB)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# Clase para servir estáticos con encabezados de caché inmutable (30 días)
+class StaticConCache(StaticFiles):
+    async def get_response(self, path, scope):
+        respuesta = await super().get_response(path, scope)
+        if respuesta.status_code == 200:
+            respuesta.headers["Cache-Control"] = "public, max-age=2592000, immutable"
+        return respuesta
+
+# Montar archivos estáticos para servir imágenes con caché
+app.mount("/static", StaticConCache(directory="uploads"), name="static")
+app.mount("/demo", StaticConCache(directory="app/static/demo"), name="demo")
 
 # Configuración dinámica de CORS desde variables de entorno
 origins = [origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()]
