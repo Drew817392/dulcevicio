@@ -67,3 +67,19 @@ async def read_root():
 def check_salud(db: Session = Depends(get_db)):
     db.execute(text("SELECT 1"))
     return {"estado": "ok", "base": "ok"}
+
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
+
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+class StaticConCache(StaticFiles):
+    async def get_response(self, path, scope):
+        respuesta = await super().get_response(path, scope)
+        if respuesta.status_code == 200:
+            respuesta.headers["Cache-Control"] = "public, max-age=2592000, immutable"
+        return respuesta
+
+Path("uploads/productos").mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticConCache(directory="uploads"), name="static")
+app.mount("/demo", StaticConCache(directory="app/static/demo"), name="demo")
